@@ -15,7 +15,8 @@ class TestNotify:
         }
     }
 
-    # The following tests will not work as the Notify API key has been removed until a mock service can be introduced
+    # The following tests will not work, until a mock service can be introduced,
+    # as the Notify API key has been removed.
     # (see https://github.com/ONSdigital/eq-submission-confirmation-consumer/pull/12)
     def test_successful(self, base_url, requests_session):
         res = requests_session.post(base_url, json=self.payload)

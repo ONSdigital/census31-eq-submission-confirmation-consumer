@@ -3,8 +3,8 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: ((image_registry))/eq-python-deploy-image
-    tag: ((deploy_image_version))
+    repository: gcr.io/google.com/cloudsdktool/cloud-sdk
+    tag: slim
 inputs:
   - name: eq-submission-confirmation-consumer
 params:
@@ -24,6 +24,4 @@ run:
       gcloud config set project "${PROJECT_ID}"
 
       cd eq-submission-confirmation-consumer
-      pip3 install poetry==2.1.2 poetry-plugin-export
-      poetry export --without-hashes --format=requirements.txt > requirements.txt
-      ./scripts/deploy_function.sh
+      ./scripts/delete_function.sh

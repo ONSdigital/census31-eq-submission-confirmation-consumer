@@ -58,7 +58,7 @@ if not _is_valid_uuid(service_id):
 if not _is_valid_uuid(secret_key):
     raise InvalidNotifyKeyError("API key is not a valid uuid")
 
-# These are placeholder id mappings until the new ones exist https://officefornationalstatistics.atlassian.net/browse/CTE-327
+# These are placeholder id mappings until the new ones exist see CTE-327
 template_id_mapping = {
     ("H", "GB-ENG", "en"): "00000000-1111-2222-3333-000000000000",
     ("H", "GB-WLS", "en"): "00000000-1111-2222-3333-000000000001",
@@ -74,7 +74,7 @@ template_id_mapping = {
     ("I", "GB-NIR", "eo"): "00000000-1111-2222-3333-000000000011",
     ("C", "GB-ENG", "en"): "00000000-1111-2222-3333-000000000012",
     ("C", "GB-WLS", "en"): "00000000-1111-2222-3333-000000000013",
-    ("C", "GB-WLS", "cy"): "00000000-1111-2222-3333-000000000014"
+    ("C", "GB-WLS", "cy"): "00000000-1111-2222-3333-000000000014",
 }
 
 data_fields = ("email_address", "display_address", "tx_id", "questionnaire_id")

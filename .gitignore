@@ -117,3 +117,5 @@ typing/
 
 .development.env
 .env
+
+megalinter-reports/

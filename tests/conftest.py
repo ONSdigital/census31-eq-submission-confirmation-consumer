@@ -32,7 +32,7 @@ def notify_function_process():
 @pytest.fixture(scope="module")
 def base_url():
     port = os.getenv("PORT", "8080")
-    return f"http://localhost:{port}"
+    return f"http://localhost:{port}"  # DevSkim: ignore DS162092
 
 
 # pylint: disable=redefined-outer-name

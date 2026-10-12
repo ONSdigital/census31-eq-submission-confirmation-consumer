@@ -1,28 +1,40 @@
+---
 name: Pull Request
 
 on:
   pull_request:
     branches:
-      - main
+      - "main"
+      - "v3-census"
+
+concurrency:
+  group: "${{ github.head_ref }}"
+  cancel-in-progress: true
+
+permissions: {}
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+    runs-on: ubuntu-22.04
     env:
       NOTIFY_API_KEY: ${{ secrets.DEV_NOTIFY_API_KEY }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - run: |
-          echo "PYTHON_VERSION=$(cat .python-version)" >> $GITHUB_ENV
-      - uses: actions/setup-python@v5
+          echo "PYTHON_VERSION=$(cat .python-version)" >> "$GITHUB_ENV"
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install Poetry
-        uses: snok/install-poetry@v1
+        uses: snok/install-poetry@a783c322200f0519c7926aa6faa857c4e23e9263 # v1.4.2
         with:
           version: 2.1.2
           virtualenvs-create: true
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install virtual environment
@@ -31,3 +43,24 @@ jobs:
         run: make lint
       - name: Running unit tests
         run: make test
+
+  required-gate:
+    permissions:
+      contents: "read"
+    runs-on: ubuntu-22.04
+    if: always()
+    needs: [test]
+    steps:
+      - name: Check required jobs passed
+        env:
+          TEST: ${{ needs.test.result }}
+        run: |
+          echo "test=$TEST"
+
+          [ "$TEST" = "success" ] || {
+            echo "::error::test must run and pass before merge (result: $TEST)."
+            echo "If skip-tests-unit is set, remove the label and rerun checks."
+            exit 1
+          }
+
+          echo "All required checks passed!"
