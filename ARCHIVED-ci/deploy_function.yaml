@@ -1,13 +1,15 @@
+---
 platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: gcr.io/google.com/cloudsdktool/cloud-sdk
-    tag: alpine
+    repository: ((image_registry))/eq-python-deploy-image
+    tag: ((deploy_image_version))
+inputs:
+  - name: eq-submission-confirmation-consumer
 params:
   SERVICE_ACCOUNT_JSON: ((gcp.service_account_json))
   PROJECT_ID:
-  QUEUE_NAME:
 run:
   path: bash
   args:
@@ -20,5 +22,8 @@ run:
 
       gcloud auth activate-service-account --key-file $GOOGLE_APPLICATION_CREDENTIALS
       gcloud config set project "${PROJECT_ID}"
-      gcloud tasks queues pause "${QUEUE_NAME}"
 
+      cd eq-submission-confirmation-consumer
+      pip3 install poetry==2.1.2 poetry-plugin-export
+      poetry export --without-hashes --format=requirements.txt > requirements.txt
+      ./scripts/deploy_function.sh

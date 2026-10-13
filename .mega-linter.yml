@@ -1,0 +1,53 @@
+---
+# Configuration file for MegaLinter
+#
+# See all available variables at https://megalinter.io/latest/config-file/ and in
+# linters documentation
+# all, none, or list of linter keys
+
+# If you use ENABLE variable, all other languages/formats/tooling-formats will
+# be disabled by default
+# Have decided not to enable the Python linter as has been recommended in point 7
+# in the [python template readme](https://github.com/ONSdigital/ons-python-template#3-megalinter)
+ENABLE:
+  - ACTION
+  - DOCKERFILE
+  - EDITORCONFIG
+  - HTML
+  - JAVASCRIPT
+  - TYPESCRIPT
+  - JSON
+  - MARKDOWN
+  - REPOSITORY
+  - YAML
+
+DISABLE_LINTERS:
+  - HTML_HTMLHINT # HTMLHint doesn't understand Jinja2 syntax
+  - JAVASCRIPT_STANDARD # we just use eslint to lint the eslint config file
+  - JSON_V8R # makes network calls to SchemaStore; no matches for questionnaire schemas; package.json covered by npm-package-json-lint
+  - YAML_V8R # makes network calls to SchemaStore; GitHub Actions workflows covered more thoroughly by actionlint
+  - REPOSITORY_BETTERLEAKS # false positives on test key fixtures; secretlint cover the same ground
+  - REPOSITORY_GRYPE # CVE coverage overlaps trivy + osv-scanner; slowest of the three at ~90s
+  - REPOSITORY_TRUFFLEHOG # git history scanning not required; current code covered by secretlint
+  - REPOSITORY_SYFT # SBOM generation covered by trivy
+  - REPOSITORY_OSV_SCANNER #Gives little value alongside dependabot CTE-339, possibly to be reintroduced closer to release
+  - REPOSITORY_TRIVY #Gives little value alongside dependabot CTE-339, possibly to be reintroduced closer to release
+  - REPOSITORY_TRIVY_SBOM # redundant alongside dependabot
+
+FORMATTERS_DISABLE_ERRORS: false # Ensures code is actually fixable when using `make megalint-apply`
+SHOW_ELAPSED_TIME: true # Displays execution time for each linter
+FLAVOR_SUGGESTIONS: false # Disables suggestions to use different MegaLinter flavors
+
+# Exclude generated artifacts from all linters if not run in project mode to avoid false positives on non-source files.
+# Match both workspace-relative and absolute paths (e.g. /tmp/lint/... in CI containers).
+FILTER_REGEX_EXCLUDE: ((^|.*/)(megalinter-reports|htmlcov|coverage|\.venv|node_modules)(/|$))|(/__pycache__/)|(\.pyc$)
+
+ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
+  - GITHUB_TOKEN
+
+# kingfisher.yaml is not auto-discovered; must be passed explicitly
+REPOSITORY_KINGFISHER_ARGUMENTS: ["--config", "./kingfisher.yaml"]
+
+# Use .secretlintignore instead of .gitignore so project test key fixtures can be excluded
+# secretlint takes the last --secretlintignore value, so .secretlintignore overrides the default .gitignore
+REPOSITORY_SECRETLINT_ARGUMENTS: ["--secretlintignore", ".secretlintignore"]

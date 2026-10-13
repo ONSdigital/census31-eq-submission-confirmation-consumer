@@ -1,3 +1,9 @@
+# ARCHIVE NOTE
+
+This folder contains scripts that were used for the 21 census be concourse for deployment. Concourse will not be used for 2031 census, but this folder remains for comparison as a new CI approach is introduced as part of jira ticket <https://officefornationalstatistics.atlassian.net/browse/CTE-332>, when it will be removed.
+
+
+
 ## Pause Cloud Task queue
 
 A cloud task queue can be paused by using the `pause_cloud_task_queue.yaml` task. This can be done via Concourse using the following command:

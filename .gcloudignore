@@ -34,3 +34,6 @@ Makefile
 Pipfile*
 
 LICENSE
+
+megalinter-reports/
+./qemu_devskim_*

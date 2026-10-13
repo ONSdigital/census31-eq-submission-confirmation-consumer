@@ -1,15 +1,13 @@
----
 platform: linux
 image_resource:
   type: registry-image
   source:
     repository: gcr.io/google.com/cloudsdktool/cloud-sdk
-    tag: slim
-inputs:
-  - name: eq-submission-confirmation-consumer
+    tag: alpine
 params:
   SERVICE_ACCOUNT_JSON: ((gcp.service_account_json))
   PROJECT_ID:
+  QUEUE_NAME:
 run:
   path: bash
   args:
@@ -22,6 +20,4 @@ run:
 
       gcloud auth activate-service-account --key-file $GOOGLE_APPLICATION_CREDENTIALS
       gcloud config set project "${PROJECT_ID}"
-
-      cd eq-submission-confirmation-consumer
-      ./scripts/delete_function.sh
+      gcloud tasks queues pause "${QUEUE_NAME}"
